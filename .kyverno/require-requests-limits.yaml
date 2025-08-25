@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-requests-limits
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: check-rr
+    match: { resources: { kinds: ["Pod","Deployment","StatefulSet"] } }
+    validate:
+      message: "CPU/memory requests and limits are required."
+      pattern:
+        spec:
+          containers:
+          - resources:
+              requests:
+                cpu: "?*"
+                memory: "?*"
+              limits:
+                cpu: "?*"
+                memory: "?*"
